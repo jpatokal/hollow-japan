@@ -220,12 +220,13 @@
         <div class="controls">
             <div class="year-label" id="yearLabel">1980</div>
             <div class="row">
+                <button id="playBtn">⏸</button>
                 <button id="prevBtn">◀</button>
                 <input
                     type="range"
                     id="yearSlider"
                     min="0"
-                    max="8"
+                    max="70"
                     value="0"
                     step="1"
                 />
@@ -247,9 +248,7 @@
             import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
             // ─── Constants ───────────────────────────────────────────
-            const YEARS = [
-                1980, 1985, 1990, 1995, 2000, 2005, 2010, 2015, 2020,
-            ];
+            const YEARS = Array.from({ length: 71 }, (_, i) => 1980 + i);
             const SCALE = 2.5; // world units per degree
             const CENTER_LNG = 135;
             const CENTER_LAT = 34.5;
@@ -327,7 +326,7 @@
             }
 
             async function loadCSV() {
-                const resp = await fetch("built_pop_wide_en_jp.csv");
+                const resp = await fetch("built_pop_wide_en_jp_extended.csv");
                 const text = await resp.text();
                 const lines = text.trim().split("\n");
                 const headers = parseCSVLine(lines[0]);
@@ -657,10 +656,10 @@
                             ? targetHeight / item.maxHeight
                             : 0.01;
 
-                    // Color based on population change
-                    let colorHex = 0xeeeeee;
-                    if (yearIdx > 0) {
-                        const prevYr = YEARS[yearIdx - 1];
+                    // Color based on 5-year change
+                    let colorHex = 0x888899;
+                    if (yr > 1980) {
+                        const prevYr = yr - 5 >= 1980 ? yr - 5 : 1980;
                         const prevPop = item.entry[prevYr];
                         if (prevPop && prevPop > 0 && pop > 0) {
                             const rate = (pop - prevPop) / prevPop;
@@ -668,8 +667,6 @@
                             const cssColor = colorForRate(clamped / 0.1);
                             colorHex = new THREE.Color(cssColor).getHex();
                         }
-                    } else {
-                        colorHex = 0x888899; // neutral for 1980 (base year)
                     }
 
                     for (const mesh of item.meshes) {
@@ -730,20 +727,38 @@
                 const el = document.getElementById("info");
                 const yr = YEARS[currentYearIdx];
                 const pop = item.entry[yr];
-                const prevYr =
-                    currentYearIdx > 0 ? YEARS[currentYearIdx - 1] : null;
-                const prevPop = prevYr ? item.entry[prevYr] : null;
                 let change = "";
-                if (prevPop && prevPop > 0 && pop > 0) {
-                    const pct = (((pop - prevPop) / prevPop) * 100).toFixed(1);
-                    const sign = pct >= 0 ? "+" : "";
-                    change = `<br>Change from ${prevYr}: ${sign}${pct}%`;
+                if (yr > 1980) {
+                    const prevYr = yr - 5 >= 1980 ? yr - 5 : 1980;
+                    const prevPop = item.entry[prevYr];
+                    if (prevPop && prevPop > 0 && pop > 0) {
+                        const pct = (((pop - prevPop) / prevPop) * 100).toFixed(
+                            1,
+                        );
+                        const sign = pct >= 0 ? "+" : "";
+                        change = `<br>Change since ${prevYr}: ${sign}${pct}%`;
+                    }
                 }
+                let since1980 = "";
+                if (yr > 1980) {
+                    const pop80 = item.entry[1980];
+                    if (pop80 && pop80 > 0 && pop > 0) {
+                        const pct = (((pop - pop80) / pop80) * 100).toFixed(1);
+                        const sign = pct >= 0 ? "+" : "";
+                        since1980 = `<br>Change since 1980: ${sign}${pct}%`;
+                    }
+                }
+                const label =
+                    yr % 5 === 0
+                        ? yr > 2020
+                            ? "(projected)"
+                            : "(census)"
+                        : "(est.)";
                 const cbrtPop = pop > 0 ? Math.cbrt(pop).toFixed(1) : "—";
                 el.innerHTML = `
                     <div class="name">${item.name_en}</div>
                     <div class="jp">${item.name_jp}</div>
-                    <div>Population ${yr}: <b>${pop ? pop.toLocaleString() : "N/A"}</b>${change}</div>
+                    <div>Population ${yr}: <b>${pop ? pop.toLocaleString() : "N/A"}</b> ${label}${change}${since1980}</div>
                     <div class="height-label">∛pop = ${cbrtPop}</div>
                 `;
                 el.style.display = "block";
@@ -811,11 +826,45 @@
                     .getElementById("nextBtn")
                     .addEventListener("click", function () {
                         const v = parseInt(slider.value);
-                        if (v < 8) {
+                        if (v < 70) {
                             slider.value = v + 1;
                             updateScene(v + 1);
                         }
                     });
+
+                // ─── Play / Pause ─────────────────────────────────
+                let isPlaying = false;
+                let playTimer = null;
+                const playBtn = document.getElementById("playBtn");
+
+                function togglePlay() {
+                    if (isPlaying) {
+                        clearInterval(playTimer);
+                        playTimer = null;
+                        isPlaying = false;
+                        playBtn.textContent = "▶ Play";
+                    } else {
+                        const v = parseInt(slider.value);
+                        if (v >= 70) {
+                            slider.value = 0;
+                            updateScene(0);
+                        }
+                        isPlaying = true;
+                        playBtn.textContent = "⏸ Pause";
+                        playTimer = setInterval(() => {
+                            const cur = parseInt(slider.value);
+                            if (cur >= 70) {
+                                togglePlay();
+                                return;
+                            }
+                            slider.value = cur + 1;
+                            updateScene(cur + 1);
+                        }, 500);
+                    }
+                }
+
+                playBtn.addEventListener("click", togglePlay);
+                togglePlay();
 
                 // ─── Resize ─────────────────────────────────────────
                 window.addEventListener("resize", () => {
