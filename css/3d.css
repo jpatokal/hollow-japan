@@ -15,28 +15,30 @@ body {
 /* ─── Controls overrides (dark theme) ──────────────────────────── */
 .controls {
     background: rgba(20, 20, 40, 0.88);
-    padding: 14px 22px;
+    padding: 10px 14px;
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
-    gap: 6px;
-    min-width: 340px;
     backdrop-filter: blur(6px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     z-index: 10;
 }
 .controls .year-label {
-    font-size: 20px;
+    font-size: 15px;
     color: #e0e0f0;
-    letter-spacing: 0.5px;
+    font-weight: 700;
+    min-width: 40px;
+    text-align: center;
 }
 .controls input[type="range"] {
     height: 5px;
     accent-color: #6a8cff;
+    min-width: 60px;
 }
 .controls button {
     background: #3a4a8a;
     color: #e0e0f0;
-    padding: 5px 14px;
-    font-size: 14px;
+    padding: 4px 10px;
+    font-size: 15px;
+    line-height: 1;
 }
 .controls button:hover {
     background: #5a6aaa;
@@ -53,15 +55,8 @@ body {
     gap: 3px;
     z-index: 10;
 }
-.legend .title {
-    color: #e0e0f0;
-}
 .legend .grad {
     height: 14px;
-}
-.legend .grad span {
-    width: 18px;
-    height: 12px;
 }
 .legend .labels {
     font-size: 10px;

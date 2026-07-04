@@ -463,26 +463,6 @@ async function init() {
       refreshScene();
     });
 
-  // ─── Slider events ───────────────────────────────────────────
-  const slider = document.getElementById("yearSlider");
-  slider.addEventListener("input", function () {
-    updateScene(parseInt(this.value));
-  });
-  document.getElementById("prevBtn").addEventListener("click", function () {
-    const v = parseInt(slider.value);
-    if (v > 0) {
-      slider.value = v - 1;
-      updateScene(v - 1);
-    }
-  });
-  document.getElementById("nextBtn").addEventListener("click", function () {
-    const v = parseInt(slider.value);
-    if (v < 70) {
-      slider.value = v + 1;
-      updateScene(v + 1);
-    }
-  });
-
   // ─── Play / Pause ────────────────────────────────────────────
   let isPlaying = false;
   let playTimer = null;
@@ -493,28 +473,37 @@ async function init() {
       clearInterval(playTimer);
       playTimer = null;
       isPlaying = false;
-      playBtn.textContent = "▶ Play";
+      playBtn.textContent = "▶";
     } else {
+      const slider = document.getElementById("yearSlider");
       const v = parseInt(slider.value);
       if (v >= 70) {
         slider.value = 0;
         updateScene(0);
       }
       isPlaying = true;
-      playBtn.textContent = "⏸ Pause";
+      playBtn.textContent = "⏸";
       playTimer = setInterval(() => {
-        const cur = parseInt(slider.value);
+        const s = document.getElementById("yearSlider");
+        const cur = parseInt(s.value);
         if (cur >= 70) {
           togglePlay();
           return;
         }
-        slider.value = cur + 1;
+        s.value = cur + 1;
         updateScene(cur + 1);
       }, 500);
     }
   }
 
   playBtn.addEventListener("click", togglePlay);
+
+  // ─── Slider events ───────────────────────────────────────────
+  const slider = document.getElementById("yearSlider");
+  slider.addEventListener("input", function () {
+    updateScene(parseInt(this.value));
+  });
+
   togglePlay();
 
   // ─── Resize ──────────────────────────────────────────────────

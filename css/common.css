@@ -19,40 +19,39 @@ body {
     z-index: 1000;
     background: rgba(255, 255, 255, 0.95);
     border-radius: 12px;
-    padding: 16px 24px;
+    padding: 10px 14px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    min-width: 320px;
-}
-.controls .year-label {
-    font-size: 22px;
-    font-weight: 700;
-    color: #333;
 }
 .controls .row {
     display: flex;
     align-items: center;
-    gap: 12px;
-    width: 100%;
+    gap: 8px;
+    white-space: nowrap;
+}
+.controls .year-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: #333;
+    min-width: 40px;
+    text-align: center;
 }
 .controls input[type="range"] {
     flex: 1;
     cursor: pointer;
     height: 6px;
+    min-width: 60px;
 }
 .controls button {
     background: #777;
     color: #fff;
     border: none;
     border-radius: 6px;
-    padding: 6px 14px;
+    padding: 4px 10px;
     font-size: 15px;
     cursor: pointer;
     font-weight: 600;
     transition: background 0.2s;
+    line-height: 1;
 }
 .controls button:hover {
     background: #999;
@@ -72,6 +71,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    width: min(400px, calc(100vw - 40px));
+    box-sizing: border-box;
 }
 .legend .map-title-row {
     display: flex;
@@ -88,20 +89,18 @@ body {
     font-weight: 700;
     letter-spacing: 0.5px;
 }
-.legend .title {
-    font-weight: 600;
-    margin-bottom: 2px;
-}
 .legend .grad {
     display: flex;
     align-items: center;
     gap: 2px;
     height: 16px;
+    width: 100%;
 }
 .legend .grad span {
-    width: 20px;
+    flex: 1 1 0;
+    min-width: 4px;
+    max-width: 20px;
     height: 14px;
-    display: inline-block;
 }
 .legend .labels {
     display: flex;

@@ -166,34 +166,6 @@ async function init() {
       updateMap();
     });
 
-  const slider = document.getElementById("yearSlider");
-  slider.addEventListener("input", function () {
-    if (isPlaying) togglePlay();
-    sliderIdx = parseInt(this.value);
-    updateMap();
-    if (currentCode) {
-      const entry = popData[currentCode];
-      if (entry) showInfoPopup(entry, 1980 + sliderIdx);
-    }
-  });
-
-  document.getElementById("prevBtn").addEventListener("click", function () {
-    if (isPlaying) togglePlay();
-    if (sliderIdx > 0) {
-      sliderIdx--;
-      slider.value = sliderIdx;
-      updateMap();
-    }
-  });
-  document.getElementById("nextBtn").addEventListener("click", function () {
-    if (isPlaying) togglePlay();
-    if (sliderIdx < 70) {
-      sliderIdx++;
-      slider.value = sliderIdx;
-      updateMap();
-    }
-  });
-
   // ─── Play / Pause ─────────────────────────────────
   let isPlaying = false;
   let playTimer = null;
@@ -204,14 +176,14 @@ async function init() {
       clearInterval(playTimer);
       playTimer = null;
       isPlaying = false;
-      playBtn.textContent = "▶ Play";
+      playBtn.textContent = "▶";
     } else {
       if (sliderIdx >= 70) {
         sliderIdx = 0;
         slider.value = 0;
       }
       isPlaying = true;
-      playBtn.textContent = "⏸ Pause";
+      playBtn.textContent = "⏸";
       playTimer = setInterval(() => {
         sliderIdx++;
         slider.value = sliderIdx;
@@ -228,6 +200,18 @@ async function init() {
   }
 
   playBtn.addEventListener("click", togglePlay);
+
+  const slider = document.getElementById("yearSlider");
+  slider.addEventListener("input", function () {
+    if (isPlaying) togglePlay();
+    sliderIdx = parseInt(this.value);
+    updateMap();
+    if (currentCode) {
+      const entry = popData[currentCode];
+      if (entry) showInfoPopup(entry, 1980 + sliderIdx);
+    }
+  });
+
   // Start autoplay immediately
   togglePlay();
 }
