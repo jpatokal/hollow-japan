@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Japan Population 3D 1980–2020</title>
+        <title>Vanishing Japan 消滅図 3D</title>
         <link rel="stylesheet" href="css/common.css" />
         <link rel="stylesheet" href="css/3d.css" />
     </head>
@@ -18,12 +18,32 @@
 
         <div id="info"></div>
 
-        <div id="camInfo"></div>
+        <div id="camInfo" style="display: none">
+            <span class="hint-toggle">?</span>
+            <div class="controls-hint">
+                <span class="hint-row" id="hintRotate"
+                    ><b>rotate</b> one finger / left mouse</span
+                >
+                <span class="hint-row" id="hintMove"
+                    ><b>move</b> two fingers / shift</span
+                >
+                <span class="hint-row" id="hintZoom"
+                    ><b>zoom</b> pinch / scroll</span
+                >
+            </div>
+            <div class="cam-coords"></div>
+        </div>
 
         <div class="legend" style="display: none">
             <div class="map-title-row">
-                <span class="title-jp">消滅図</span>
-                <span class="title-en">Vanishing Japan</span>
+                <span class="title-main" id="mainTitle">Vanishing Japan</span>
+                <div class="title-toggles">
+                    <a href="#" class="toggle-link" id="langToggle">日本語</a>
+                    <span class="toggle-sep">|</span>
+                    <a href="index.html" class="toggle-link" id="viewToggle"
+                        >2D</a
+                    >
+                </div>
             </div>
             <div class="grad" id="gradientBar"></div>
             <div class="pct-labels" id="pctLabels"></div>

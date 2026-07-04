@@ -10,6 +10,8 @@ import {
   setChangeMode,
   rebuildGradientBar,
   showInfoPopup,
+  getLang,
+  setLang,
 } from "./common.js";
 
 // ─── Constants ───────────────────────────────────────────────────
@@ -432,6 +434,7 @@ async function init() {
 
   document.getElementById("loading").style.display = "none";
   document.querySelector(".legend").style.display = "flex";
+  document.getElementById("camInfo").style.display = "flex";
 
   // ─── Mode toggle ─────────────────────────────────────────────
   function refreshScene() {
@@ -499,6 +502,18 @@ async function init() {
     updateScene(parseInt(this.value));
   });
 
+  // ─── Language toggle ──────────────────────────────────────────
+  document.getElementById("langToggle").addEventListener("click", function (e) {
+    e.preventDefault();
+    const newLang = getLang() === "en" ? "jp" : "en";
+    setLang(newLang);
+    // Refresh info popup if currently showing
+    if (hoveredCode !== null) {
+      const found = allMeshes.find((item) => item.code === hoveredCode);
+      if (found) showInfoPopup(found.entry, YEARS[currentYearIdx]);
+    }
+  });
+
   togglePlay();
 
   // ─── Resize ──────────────────────────────────────────────────
@@ -510,21 +525,30 @@ async function init() {
     renderer.setSize(w, h);
   });
 
+  // ─── ? toggle (mobile) ──────────────────────────────────────
+  const camInfo = document.getElementById("camInfo");
+  camInfo.addEventListener("click", function () {
+    this.classList.toggle("expanded");
+  });
+
   // ─── Animation loop ──────────────────────────────────────────
   function animate() {
     requestAnimationFrame(animate);
     controls.update();
     const cam = camera.position;
     const dist = controls.target.distanceTo(cam);
-    document.getElementById("camInfo").textContent =
-      "x " +
-      cam.x.toFixed(1) +
-      "  y " +
-      cam.y.toFixed(1) +
-      "  z " +
-      cam.z.toFixed(1) +
-      "  d " +
-      dist.toFixed(1);
+    const coordsEl = document.querySelector("#camInfo .cam-coords");
+    if (coordsEl) {
+      coordsEl.textContent =
+        "x " +
+        cam.x.toFixed(1) +
+        "  y " +
+        cam.y.toFixed(1) +
+        "  z " +
+        cam.z.toFixed(1) +
+        "  d " +
+        dist.toFixed(1);
+    }
     renderer.render(scene, camera);
   }
   animate();

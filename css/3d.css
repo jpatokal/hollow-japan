@@ -19,7 +19,7 @@ body {
     height: 14px;
 }
 
-/* ─── Camera info ───────────────────────────────────────────────── */
+/* ─── Camera info / controls hint ───────────────────────────────── */
 #camInfo {
     position: absolute;
     bottom: 100px;
@@ -29,11 +29,75 @@ body {
     border-radius: 6px;
     padding: 6px 10px;
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
-    font-family: monospace;
     font-size: 11px;
     color: #555;
     line-height: 1.5;
-    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+}
+#camInfo .cam-coords {
+    font-family: monospace;
+}
+#camInfo .controls-hint {
+    display: flex;
+    flex-direction: column;
+}
+#camInfo .controls-hint .hint-row b {
+    color: #333;
+    display: inline-block;
+    min-width: 38px;
+}
+#camInfo .cam-coords {
+    margin-top: 4px;
+    padding-top: 4px;
+    border-top: 1px solid #ddd;
+}
+
+/* ─── ? toggle (mobile) ─────────────────────────────────────────── */
+.hint-toggle {
+    display: none;
+}
+@media (max-width: 767px) {
+    #camInfo {
+        cursor: pointer;
+        pointer-events: auto;
+        padding: 0;
+        min-width: 28px;
+        min-height: 28px;
+        align-items: center;
+        justify-content: center;
+        bottom: auto;
+        left: auto;
+        top: 20px;
+        right: 20px;
+    }
+    #camInfo .hint-toggle {
+        display: block;
+        font-size: 16px;
+        font-weight: 700;
+        color: #555;
+        text-align: center;
+        line-height: 28px;
+        width: 28px;
+        height: 28px;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+    #camInfo .cam-coords,
+    #camInfo .controls-hint {
+        display: none;
+    }
+    #camInfo.expanded {
+        padding: 6px 10px;
+        align-items: stretch;
+    }
+    #camInfo.expanded .hint-toggle {
+        display: none;
+    }
+    #camInfo.expanded .cam-coords,
+    #camInfo.expanded .controls-hint {
+        display: flex;
+    }
 }
 
 /* ─── Loading screen ────────────────────────────────────────────── */

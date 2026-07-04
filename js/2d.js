@@ -8,6 +8,8 @@ import {
   setChangeMode,
   rebuildGradientBar,
   showInfoPopup,
+  getLang,
+  setLang,
 } from "./common.js";
 
 // ---------- Load GeoJSON ----------
@@ -210,6 +212,18 @@ async function init() {
     if (isPlaying) togglePlay();
     sliderIdx = parseInt(this.value);
     updateMap();
+    if (currentCode) {
+      const entry = popData[currentCode];
+      if (entry) showInfoPopup(entry, 1980 + sliderIdx);
+    }
+  });
+
+  // ─── Language toggle ──────────────────────────────────────────
+  document.getElementById("langToggle").addEventListener("click", function (e) {
+    e.preventDefault();
+    const newLang = getLang() === "en" ? "jp" : "en";
+    setLang(newLang);
+    // Refresh info popup if currently showing
     if (currentCode) {
       const entry = popData[currentCode];
       if (entry) showInfoPopup(entry, 1980 + sliderIdx);

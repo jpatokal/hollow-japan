@@ -1,6 +1,68 @@
 // ─── Shared constants ────────────────────────────────────────────
 export const YEARS = Array.from({ length: 71 }, (_, i) => 1980 + i);
 
+// ─── Language ──────────────────────────────────────────────────────
+let _lang = "en";
+export function getLang() {
+  return _lang;
+}
+export function setLang(lang) {
+  _lang = lang;
+  updateLabels();
+}
+
+const TRANSLATIONS = {
+  jp: {
+    mainTitle: "消滅図",
+    mode5yr: "直近5年",
+    modeSince1980: "1980年以降",
+    langToggle: "English",
+    popLabel: "%d年の人口",
+    census: "(国勢調査)",
+    projected: "(推計)",
+    est: "(推計)",
+    changeSince: "%d年からの変化",
+    changeSince1980: "1980年からの変化",
+    hintRotate: "<b>回転</b> 1本指 / 左ドラッグ",
+    hintMove: "<b>移動</b> 2本指 / シフト",
+    hintZoom: "<b>ズーム</b> ピンチ / スクロール",
+  },
+  en: {
+    mainTitle: "Vanishing Japan",
+    mode5yr: "Last 5 years",
+    modeSince1980: "Since 1980",
+    langToggle: "日本語",
+    popLabel: "Population in %d",
+    census: "(census)",
+    projected: "(projected)",
+    est: "(est.)",
+    changeSince: "Change since %d",
+    changeSince1980: "Change since 1980",
+    hintRotate: "<b>rotate</b> one finger / left mouse",
+    hintMove: "<b>move</b> two fingers / shift",
+    hintZoom: "<b>zoom</b> pinch / scroll",
+  },
+};
+
+export function updateLabels() {
+  const t = TRANSLATIONS[_lang];
+  if (!t) return;
+  const mainTitle = document.getElementById("mainTitle");
+  if (mainTitle) mainTitle.textContent = t.mainTitle;
+  const mode5yr = document.getElementById("mode5yr");
+  const modeSince1980 = document.getElementById("modeSince1980");
+  if (mode5yr) mode5yr.textContent = t.mode5yr;
+  if (modeSince1980) modeSince1980.textContent = t.modeSince1980;
+  const langToggle = document.getElementById("langToggle");
+  if (langToggle) langToggle.textContent = t.langToggle;
+  const hintRotate = document.getElementById("hintRotate");
+  const hintMove = document.getElementById("hintMove");
+  const hintZoom = document.getElementById("hintZoom");
+  if (hintRotate) hintRotate.innerHTML = t.hintRotate;
+  if (hintMove) hintMove.innerHTML = t.hintMove;
+  if (hintZoom) hintZoom.innerHTML = t.hintZoom;
+}
+
 // ─── Change mode: "5year" or "since1980" ─────────────────────────
 let _changeMode = "5year";
 export function getChangeMode() {
@@ -121,6 +183,8 @@ export function showInfoPopup(entry, yr, extraHtml = "") {
   const pop = entry[yr];
   if (pop == null) return;
 
+  const t = TRANSLATIONS[_lang];
+
   let change = "";
   if (yr > 1980) {
     const prevYr = yr - 5 >= 1980 ? yr - 5 : 1980;
@@ -128,7 +192,7 @@ export function showInfoPopup(entry, yr, extraHtml = "") {
     if (prevPop && prevPop > 0 && pop > 0) {
       const pct = (((pop - prevPop) / prevPop) * 100).toFixed(1);
       const sign = pct >= 0 ? "+" : "";
-      change = `<br>Change since ${prevYr}: ${sign}${pct}%`;
+      change = `<br>${t.changeSince.replace("%d", prevYr)}: ${sign}${pct}%`;
     }
   }
 
@@ -138,17 +202,21 @@ export function showInfoPopup(entry, yr, extraHtml = "") {
     if (pop80 && pop80 > 0 && pop > 0) {
       const pct = (((pop - pop80) / pop80) * 100).toFixed(1);
       const sign = pct >= 0 ? "+" : "";
-      since1980 = `<br>Change since 1980: ${sign}${pct}%`;
+      since1980 = `<br>${t.changeSince1980}: ${sign}${pct}%`;
     }
   }
 
-  const label =
-    yr % 5 === 0 ? (yr > 2020 ? "(projected)" : "(census)") : "(est.)";
+  const label = yr % 5 === 0 ? (yr > 2020 ? t.projected : t.census) : t.est;
+
+  const nameLabel = _lang === "jp" ? entry._name_jp : entry._name_en;
+  const nameSub = _lang === "jp" ? "" : entry._name_jp;
+
+  const popLabel = `${t.popLabel.replace("%d", yr)}:`;
 
   el.innerHTML = `
-        <div class="name">${entry._name_en}</div>
-        <div class="jp">${entry._name_jp}</div>
-        <div>Population ${yr}: <b>${pop.toLocaleString()}</b> ${label}${change}${since1980}</div>
+        <div class="name">${nameLabel}</div>
+        ${nameSub ? `<div class="jp">${nameSub}</div>` : ""}
+        <div>${popLabel} <b>${pop.toLocaleString()}</b> ${label}${change}${since1980}</div>
         ${extraHtml}
     `;
   el.style.display = "block";
