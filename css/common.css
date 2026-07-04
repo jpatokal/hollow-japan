@@ -1,0 +1,155 @@
+/* ─── Reset ─────────────────────────────────────────────────────── */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html,
+body {
+    height: 100%;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+/* ─── Controls bar ─────────────────────────────────────────────── */
+.controls {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    padding: 16px 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-width: 320px;
+}
+.controls .year-label {
+    font-size: 22px;
+    font-weight: 700;
+    color: #333;
+}
+.controls .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+.controls input[type="range"] {
+    flex: 1;
+    cursor: pointer;
+    height: 6px;
+}
+.controls button {
+    background: #777;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+.controls button:hover {
+    background: #999;
+}
+
+/* ─── Legend ────────────────────────────────────────────────────── */
+.legend {
+    position: absolute;
+    bottom: 100px;
+    right: 20px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    padding: 10px 14px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.legend .title {
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+.legend .grad {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 16px;
+}
+.legend .grad span {
+    width: 20px;
+    height: 14px;
+    display: inline-block;
+}
+.legend .labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #555;
+}
+.pct-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #555;
+}
+
+/* ─── Mode toggle ───────────────────────────────────────────────── */
+.mode-toggle {
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+}
+.mode-toggle .mode-btn {
+    flex: 1;
+    background: #e0e0e0;
+    color: #555;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 4px 8px;
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: 500;
+    transition:
+        background 0.2s,
+        color 0.2s;
+}
+.mode-toggle .mode-btn.active {
+    background: #777;
+    color: #fff;
+    border-color: #777;
+}
+.mode-toggle .mode-btn:hover:not(.active) {
+    background: #d0d0d0;
+}
+
+/* ─── Info popup ────────────────────────────────────────────────── */
+#info {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    padding: 10px 14px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+    font-size: 13px;
+    display: none;
+    max-width: 280px;
+    line-height: 1.4;
+}
+#info .name {
+    font-weight: 700;
+    font-size: 14px;
+}
+#info .jp {
+    color: #666;
+    font-size: 12px;
+}

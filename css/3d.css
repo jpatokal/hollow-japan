@@ -1,0 +1,163 @@
+/* ─── Dark page background ──────────────────────────────────────── */
+html,
+body {
+    overflow: hidden;
+    background: #1a1a2e;
+}
+
+/* ─── Canvas container ──────────────────────────────────────────── */
+#canvas-container {
+    width: 100vw;
+    height: 100vh;
+    display: block;
+}
+
+/* ─── Controls overrides (dark theme) ──────────────────────────── */
+.controls {
+    background: rgba(20, 20, 40, 0.88);
+    padding: 14px 22px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+    gap: 6px;
+    min-width: 340px;
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    z-index: 10;
+}
+.controls .year-label {
+    font-size: 20px;
+    color: #e0e0f0;
+    letter-spacing: 0.5px;
+}
+.controls input[type="range"] {
+    height: 5px;
+    accent-color: #6a8cff;
+}
+.controls button {
+    background: #3a4a8a;
+    color: #e0e0f0;
+    padding: 5px 14px;
+    font-size: 14px;
+}
+.controls button:hover {
+    background: #5a6aaa;
+}
+
+/* ─── Legend overrides (dark theme) ─────────────────────────────── */
+.legend {
+    background: rgba(20, 20, 40, 0.85);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #c0c0d0;
+    font-size: 12px;
+    gap: 3px;
+    z-index: 10;
+}
+.legend .title {
+    color: #e0e0f0;
+}
+.legend .grad {
+    height: 14px;
+}
+.legend .grad span {
+    width: 18px;
+    height: 12px;
+}
+.legend .labels {
+    font-size: 10px;
+    color: #9090a0;
+}
+.legend .height-note {
+    font-size: 10px;
+    color: #8080a0;
+    margin-top: 2px;
+    font-style: italic;
+}
+
+/* ─── Mode toggle overrides (dark theme) ────────────────────────── */
+.mode-toggle .mode-btn {
+    background: #2a2a4a;
+    color: #9090b0;
+    border-color: #3a3a5a;
+    font-size: 10px;
+}
+.mode-toggle .mode-btn.active {
+    background: #4a5a9a;
+    color: #e0e0f0;
+    border-color: #5a6aaa;
+}
+.mode-toggle .mode-btn:hover:not(.active) {
+    background: #3a3a5a;
+}
+
+/* ─── Info popup overrides (dark theme) ─────────────────────────── */
+#info {
+    background: rgba(20, 20, 40, 0.88);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #d0d0e0;
+    max-width: 300px;
+    z-index: 10;
+    pointer-events: none;
+}
+#info .name {
+    color: #f0f0ff;
+}
+#info .jp {
+    color: #9090b0;
+}
+#info .height-label {
+    color: #8080d0;
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+/* ─── Camera info ───────────────────────────────────────────────── */
+#camInfo {
+    position: absolute;
+    bottom: 100px;
+    left: 20px;
+    z-index: 10;
+    background: rgba(20, 20, 40, 0.75);
+    border-radius: 6px;
+    padding: 6px 10px;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    font-family: monospace;
+    font-size: 11px;
+    color: #707090;
+    line-height: 1.5;
+    pointer-events: none;
+}
+#camInfo .val {
+    color: #a0a0c0;
+}
+
+/* ─── Loading screen ────────────────────────────────────────────── */
+#loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    color: #c0c0d0;
+    font-size: 16px;
+    font-family: Helvetica, Arial, sans-serif;
+    text-align: center;
+}
+#loading .progress-track {
+    width: 200px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+#loading .progress-fill {
+    width: 0%;
+    height: 100%;
+    background: #6a8cff;
+    border-radius: 2px;
+    transition: width 0.2s;
+}
