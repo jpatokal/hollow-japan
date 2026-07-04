@@ -118,6 +118,33 @@
                 margin-top: 2px;
                 font-style: italic;
             }
+            .mode-toggle {
+                display: flex;
+                gap: 4px;
+                margin-top: 6px;
+            }
+            .mode-toggle .mode-btn {
+                flex: 1;
+                background: #2a2a4a;
+                color: #9090b0;
+                border: 1px solid #3a3a5a;
+                border-radius: 5px;
+                padding: 4px 8px;
+                font-size: 10px;
+                cursor: pointer;
+                font-weight: 500;
+                transition:
+                    background 0.2s,
+                    color 0.2s;
+            }
+            .mode-toggle .mode-btn.active {
+                background: #4a5a9a;
+                color: #e0e0f0;
+                border-color: #5a6aaa;
+            }
+            .mode-toggle .mode-btn:hover:not(.active) {
+                background: #3a3a5a;
+            }
             #info {
                 position: absolute;
                 top: 20px;
@@ -215,6 +242,18 @@
             <div class="grad" id="gradientBar"></div>
             <div class="labels"><span>Decline</span><span>Growth</span></div>
             <div class="height-note">Height ∝ ∛Population</div>
+            <div class="mode-toggle" id="modeToggle">
+                <button class="mode-btn active" id="mode5yr" data-mode="5year">
+                    Last 5 years
+                </button>
+                <button
+                    class="mode-btn"
+                    id="modeSince1980"
+                    data-mode="since1980"
+                >
+                    Since 1980
+                </button>
+            </div>
         </div>
 
         <div class="controls">

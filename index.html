@@ -73,7 +73,7 @@
             .legend {
                 position: absolute;
                 top: 20px;
-                right: 20px;
+                left: 20px;
                 z-index: 1000;
                 background: rgba(255, 255, 255, 0.9);
                 border-radius: 8px;
@@ -105,11 +105,44 @@
                 font-weight: 600;
                 margin-bottom: 2px;
             }
+            .pct-labels {
+                display: flex;
+                justify-content: space-between;
+                font-size: 11px;
+                color: #555;
+            }
+            .mode-toggle {
+                display: flex;
+                gap: 4px;
+                margin-top: 6px;
+            }
+            .mode-toggle .mode-btn {
+                flex: 1;
+                background: #e0e0e0;
+                color: #555;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                padding: 4px 8px;
+                font-size: 11px;
+                cursor: pointer;
+                font-weight: 500;
+                transition:
+                    background 0.2s,
+                    color 0.2s;
+            }
+            .mode-toggle .mode-btn.active {
+                background: #777;
+                color: #fff;
+                border-color: #777;
+            }
+            .mode-toggle .mode-btn:hover:not(.active) {
+                background: #d0d0d0;
+            }
             #info {
                 position: absolute;
-                top: 170px;
-                right: 20px;
-                left: auto;
+                top: 160px;
+                left: 20px;
+                right: auto;
                 z-index: 1000;
                 background: rgba(255, 255, 255, 0.9);
                 border-radius: 8px;
@@ -138,7 +171,22 @@
         <div class="legend">
             <div class="title">Population Change</div>
             <div class="grad" id="gradientBar"></div>
-            <div class="labels"><span>Decline</span><span>Growth</span></div>
+            <div class="labels" id="gradLabels">
+                <span>Decline</span><span>Growth</span>
+            </div>
+            <div class="pct-labels" id="pctLabels"></div>
+            <div class="mode-toggle" id="modeToggle">
+                <button class="mode-btn active" id="mode5yr" data-mode="5year">
+                    Last 5 years
+                </button>
+                <button
+                    class="mode-btn"
+                    id="modeSince1980"
+                    data-mode="since1980"
+                >
+                    Since 1980
+                </button>
+            </div>
         </div>
 
         <div class="controls">

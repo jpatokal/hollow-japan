@@ -4,20 +4,11 @@ import {
   colorForRate,
   parseCSVLine,
   loadCSV,
-  buildGradientBar,
+  getChangeMode,
+  setChangeMode,
+  rebuildGradientBar,
   showInfoPopup,
 } from "./common.js";
-
-// ---------- Build gradient legend ----------
-(function () {
-  buildGradientBar();
-  const bar = document.getElementById("gradientBar");
-  const lbl = document.createElement("div");
-  lbl.style.cssText =
-    "display:flex;justify-content:space-between;font-size:11px;color:#555;margin-top:2px";
-  lbl.innerHTML = "<span>&minus;10%</span><span>0%</span><span>+10%</span>";
-  bar.parentNode.appendChild(lbl);
-})();
 
 // ---------- Load GeoJSON ----------
 let geoLayer = null;
@@ -73,6 +64,17 @@ function calcColor(muniCode, yr) {
   if (yr <= 1980) return "#ffffff";
   const entry = popData[muniCode];
   if (!entry) return "#eeeeee";
+
+  if (getChangeMode() === "since1980") {
+    const pop80 = entry[1980];
+    const popCur = entry[yr];
+    if (pop80 == null || pop80 === 0 || popCur == null) return "#eeeeee";
+    const rate = (popCur - pop80) / pop80;
+    const clamped = Math.max(-0.9, Math.min(0.1, rate));
+    const normalized = clamped >= 0 ? clamped / 0.1 : clamped / 0.9;
+    return colorForRate(normalized, true);
+  }
+
   const prevYr = yr - 5 >= 1980 ? yr - 5 : 1980;
   const popPrev = entry[prevYr];
   const popCur = entry[yr];
@@ -109,7 +111,8 @@ function updateMap() {
 
 // ---------- Init map ----------
 async function init() {
-  const map = L.map("map").setView([37.5, 137.5], 6);
+  const map = L.map("map", { zoomControl: false }).setView([37.5, 137.5], 6);
+  L.control.zoom({ position: "topright" }).addTo(map);
   L.tileLayer(
     "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
     {
@@ -121,7 +124,47 @@ async function init() {
   ).addTo(map);
 
   await Promise.all([loadCSV(), loadAllGeoJSON(map)]);
-  updateMap();
+
+  // ─── Refresh map colours and legend when mode changes ──────
+  function refreshMap() {
+    rebuildGradientBar();
+    const pctLabels = document.getElementById("pctLabels");
+    if (getChangeMode() === "since1980") {
+      pctLabels.innerHTML = "<span>−90%</span><span>0%</span><span>+90%</span>";
+    } else {
+      pctLabels.innerHTML = "<span>−10%</span><span>0%</span><span>+10%</span>";
+    }
+    updateMap();
+    if (currentCode) {
+      const entry = popData[currentCode];
+      if (entry) showInfoPopup(entry, 1980 + sliderIdx);
+    }
+  }
+
+  // Build initial gradient / labels
+  rebuildGradientBar();
+  document.getElementById("pctLabels").innerHTML =
+    "<span>−10%</span><span>0%</span><span>+10%</span>";
+
+  // Mode toggle click handlers
+  document.getElementById("mode5yr").addEventListener("click", function () {
+    if (getChangeMode() === "5year") return;
+    setChangeMode("5year");
+    rebuildGradientBar();
+    document.getElementById("pctLabels").innerHTML =
+      "<span>−10%</span><span>0%</span><span>+10%</span>";
+    updateMap();
+  });
+  document
+    .getElementById("modeSince1980")
+    .addEventListener("click", function () {
+      if (getChangeMode() === "since1980") return;
+      setChangeMode("since1980");
+      rebuildGradientBar();
+      document.getElementById("pctLabels").innerHTML =
+        "<span>−90%</span><span>0%</span><span>+90%</span>";
+      updateMap();
+    });
 
   const slider = document.getElementById("yearSlider");
   slider.addEventListener("input", function () {

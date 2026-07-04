@@ -6,7 +6,9 @@ import {
   colorForRate,
   parseCSVLine,
   loadCSV,
-  buildGradientBar,
+  getChangeMode,
+  setChangeMode,
+  rebuildGradientBar,
   showInfoPopup,
 } from "./common.js";
 
@@ -17,7 +19,7 @@ const CENTER_LAT = 34.5;
 const HEIGHT_SCALE = 0.135; // units per ∛population
 
 // ─── Build gradient legend ──────────────────────────────────────
-buildGradientBar();
+rebuildGradientBar();
 
 // ─── Project lat/lng → x/z ──────────────────────────────────────
 function project(lng, lat) {
@@ -325,16 +327,27 @@ function updateScene(yearIdx) {
     // Scale y to achieve target height
     const scaleY = item.maxHeight > 0.01 ? targetHeight / item.maxHeight : 0.01;
 
-    // Color based on 5-year change
+    // Color based on selected mode
     let colorHex = 0x888899;
     if (yr > 1980) {
-      const prevYr = yr - 5 >= 1980 ? yr - 5 : 1980;
-      const prevPop = item.entry[prevYr];
-      if (prevPop && prevPop > 0 && pop > 0) {
-        const rate = (pop - prevPop) / prevPop;
-        const clamped = Math.max(-0.1, Math.min(0.1, rate));
-        const cssColor = colorForRate(clamped / 0.1);
-        colorHex = new THREE.Color(cssColor).getHex();
+      if (getChangeMode() === "since1980") {
+        const pop80 = item.entry[1980];
+        if (pop80 && pop80 > 0 && pop > 0) {
+          const rate = (pop - pop80) / pop80;
+          const clamped = Math.max(-0.9, Math.min(0.1, rate));
+          const normalized = clamped >= 0 ? clamped / 0.1 : clamped / 0.9;
+          const cssColor = colorForRate(normalized, true);
+          colorHex = new THREE.Color(cssColor).getHex();
+        }
+      } else {
+        const prevYr = yr - 5 >= 1980 ? yr - 5 : 1980;
+        const prevPop = item.entry[prevYr];
+        if (prevPop && prevPop > 0 && pop > 0) {
+          const rate = (pop - prevPop) / prevPop;
+          const clamped = Math.max(-0.1, Math.min(0.1, rate));
+          const cssColor = colorForRate(clamped / 0.1);
+          colorHex = new THREE.Color(cssColor).getHex();
+        }
       }
     }
 
@@ -347,7 +360,7 @@ function updateScene(yearIdx) {
   // Update hovered info if visible
   if (hoveredCode !== null) {
     const found = allMeshes.find((item) => item.code === hoveredCode);
-    if (found) showInfoPopupFor(found);
+    if (found) showInfoPopup(found.entry, YEARS[currentYearIdx]);
   }
 }
 
@@ -379,7 +392,7 @@ function onPointerMove(event) {
     for (const item of allMeshes) {
       if (item.meshes.includes(hit)) {
         hoveredCode = item.code;
-        showInfoPopupFor(item);
+        showInfoPopup(item.entry, YEARS[currentYearIdx]);
         renderer.domElement.style.cursor = "pointer";
         return;
       }
@@ -388,16 +401,6 @@ function onPointerMove(event) {
   hoveredCode = null;
   document.getElementById("info").style.display = "none";
   renderer.domElement.style.cursor = "default";
-}
-
-function showInfoPopupFor(item) {
-  const pop = item.entry[YEARS[currentYearIdx]];
-  const cbrtPop = pop > 0 ? Math.cbrt(pop).toFixed(1) : "—";
-  showInfoPopup(
-    item.entry,
-    YEARS[currentYearIdx],
-    `<div class="height-label">∛pop = ${cbrtPop}</div>`,
-  );
 }
 
 renderer.domElement.addEventListener("pointermove", onPointerMove);
@@ -440,6 +443,25 @@ async function init() {
   updateScene(0);
 
   document.getElementById("loading").style.display = "none";
+
+  // ─── Mode toggle ─────────────────────────────────────────────
+  function refreshScene() {
+    rebuildGradientBar();
+    updateScene(parseInt(slider.value));
+  }
+
+  document.getElementById("mode5yr").addEventListener("click", function () {
+    if (getChangeMode() === "5year") return;
+    setChangeMode("5year");
+    refreshScene();
+  });
+  document
+    .getElementById("modeSince1980")
+    .addEventListener("click", function () {
+      if (getChangeMode() === "since1980") return;
+      setChangeMode("since1980");
+      refreshScene();
+    });
 
   // ─── Slider events ───────────────────────────────────────────
   const slider = document.getElementById("yearSlider");
