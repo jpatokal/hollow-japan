@@ -39,7 +39,7 @@ function heightForPop(pop) {
 // ─── Scene setup ─────────────────────────────────────────────────
 const container = document.getElementById("canvas-container");
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x1a1a2e);
+scene.background = new THREE.Color(0xe8e8e8);
 
 const camera = new THREE.PerspectiveCamera(
   40,
@@ -65,16 +65,16 @@ controls.maxPolarAngle = Math.PI / 2.1;
 controls.update();
 
 // ─── Lights ──────────────────────────────────────────────────────
-const ambientLight = new THREE.AmbientLight(0x404060, 0.7);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
 scene.add(ambientLight);
 
-const hemiLight = new THREE.HemisphereLight(0x87ceeb, 0x362d59, 0.6);
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.4);
 scene.add(hemiLight);
 
-const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
 dirLight.position.set(40, 80, 30);
 scene.add(dirLight);
-const dirLight2 = new THREE.DirectionalLight(0x8888ff, 0.3);
+const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.3);
 dirLight2.position.set(-30, 20, -40);
 scene.add(dirLight2);
 
@@ -90,26 +90,11 @@ function createCompass() {
   // Outer ring
   const ringGeo = new THREE.TorusGeometry(1.8, 0.08, 8, 32);
   const ringMat = new THREE.MeshLambertMaterial({
-    color: 0x5566aa,
-    emissive: 0x223366,
-    emissiveIntensity: 0.15,
+    color: 0xaaaaaa,
   });
   const ring = new THREE.Mesh(ringGeo, ringMat);
   ring.rotation.x = Math.PI / 2;
   group.add(ring);
-
-  // Inner disc (subtle)
-  const discGeo = new THREE.CircleGeometry(1.7, 32);
-  const discMat = new THREE.MeshLambertMaterial({
-    color: 0x1a1a2e,
-    side: THREE.DoubleSide,
-    transparent: true,
-    opacity: 0.5,
-  });
-  const disc = new THREE.Mesh(discGeo, discMat);
-  disc.rotation.x = -Math.PI / 2;
-  disc.position.y = 0.01;
-  group.add(disc);
 
   // North arrow (half red, half gray)
   // Shaft — north half (red)
@@ -123,7 +108,7 @@ function createCompass() {
   // Shaft — south half (gray)
   const shaftS = new THREE.Mesh(
     new THREE.BoxGeometry(0.12, 0.04, 1.2),
-    new THREE.MeshLambertMaterial({ color: 0x667788 }),
+    new THREE.MeshLambertMaterial({ color: 0x999999 }),
   );
   shaftS.position.set(0, 0.04, -0.8);
   group.add(shaftS);
@@ -143,7 +128,7 @@ function createCompass() {
   // Arrow tail (south end, small triangle)
   const tailGeo = new THREE.ConeGeometry(0.2, 0.3, 8);
   const tailMat = new THREE.MeshLambertMaterial({
-    color: 0x667788,
+    color: 0x999999,
   });
   const tail = new THREE.Mesh(tailGeo, tailMat);
   tail.rotation.x = -Math.PI / 2;
@@ -153,33 +138,34 @@ function createCompass() {
   // Center dot
   const dot = new THREE.Mesh(
     new THREE.SphereGeometry(0.12, 8, 8),
-    new THREE.MeshLambertMaterial({ color: 0x8899cc }),
+    new THREE.MeshLambertMaterial({ color: 0x999999 }),
   );
   dot.position.y = 0.04;
   group.add(dot);
 
-  // "N" label as a sprite
+  // "N" label as a fixed plane (stays aligned with compass, always faces north)
   const canvas = document.createElement("canvas");
   canvas.width = 64;
   canvas.height = 64;
   const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, 64, 64);
-  ctx.fillStyle = "#ff6666";
+  ctx.fillStyle = "#cc3333";
   ctx.font = "bold 42px Arial, sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText("N", 32, 34);
+  ctx.fillText("N", 32, 33);
   const tex = new THREE.CanvasTexture(canvas);
   tex.needsUpdate = true;
-  const spriteMat = new THREE.SpriteMaterial({
+  const planeMat = new THREE.MeshLambertMaterial({
     map: tex,
     transparent: true,
+    side: THREE.DoubleSide,
     depthTest: false,
   });
-  const sprite = new THREE.Sprite(spriteMat);
-  sprite.scale.set(1.4, 1.4, 1);
-  sprite.position.set(0, 1.4, 2.2);
-  group.add(sprite);
+  const label = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 1.2), planeMat);
+  label.position.set(0, 0.4, 2.6);
+  label.rotation.x = -Math.PI / 2;
+  group.add(label);
 
   return group;
 }
@@ -330,7 +316,7 @@ function updateScene(yearIdx) {
     const scaleY = item.maxHeight > 0.01 ? targetHeight / item.maxHeight : 0.01;
 
     // Color based on selected mode
-    let colorHex = 0x888899;
+    let colorHex = 0xffffff;
     if (yr > 1980) {
       if (getChangeMode() === "since1980") {
         const pop80 = item.entry[1980];
@@ -445,6 +431,7 @@ async function init() {
   updateScene(0);
 
   document.getElementById("loading").style.display = "none";
+  document.querySelector(".legend").style.display = "flex";
 
   // ─── Mode toggle ─────────────────────────────────────────────
   function refreshScene() {
