@@ -42,15 +42,12 @@ body {
 .legend .grad {
     height: 14px;
 }
+.legend .pct-labels {
+    color: #9090a0;
+}
 .legend .labels {
     font-size: 10px;
     color: #9090a0;
-}
-.legend .height-note {
-    font-size: 10px;
-    color: #8080a0;
-    margin-top: 2px;
-    font-style: italic;
 }
 
 /* ─── Mode toggle overrides (dark theme) ────────────────────────── */

@@ -20,6 +20,8 @@ const HEIGHT_SCALE = 0.135; // units per ∛population
 
 // ─── Build gradient legend ──────────────────────────────────────
 rebuildGradientBar();
+document.getElementById("pctLabels").innerHTML =
+  "<span>−10%</span><span>0%</span><span>+10%</span>";
 
 // ─── Project lat/lng → x/z ──────────────────────────────────────
 function project(lng, lat) {
@@ -447,6 +449,12 @@ async function init() {
   // ─── Mode toggle ─────────────────────────────────────────────
   function refreshScene() {
     rebuildGradientBar();
+    const pctLabels = document.getElementById("pctLabels");
+    if (getChangeMode() === "since1980") {
+      pctLabels.innerHTML = "<span>−90%</span><span>0%</span><span>+90%</span>";
+    } else {
+      pctLabels.innerHTML = "<span>−10%</span><span>0%</span><span>+10%</span>";
+    }
     updateScene(parseInt(slider.value));
   }
 
