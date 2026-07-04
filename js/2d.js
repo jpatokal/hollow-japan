@@ -111,7 +111,11 @@ function updateMap() {
 
 // ---------- Init map ----------
 async function init() {
-  const map = L.map("map", { zoomControl: false }).setView([37.5, 137.5], 6);
+  const zoomLevel = window.innerWidth < 768 ? 5 : 6;
+  const map = L.map("map", { zoomControl: false }).setView(
+    [36, 137.5],
+    zoomLevel,
+  );
   L.control.zoom({ position: "topright" }).addTo(map);
   L.tileLayer(
     "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",

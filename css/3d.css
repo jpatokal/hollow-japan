@@ -13,34 +13,18 @@ body {
 }
 
 /* ─── Controls overrides (dark theme) ──────────────────────────── */
-.controls {
-    background: rgba(20, 20, 40, 0.88);
-    padding: 10px 14px;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(6px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    z-index: 10;
-}
-.controls .year-label {
-    font-size: 15px;
+.legend .controls .year-label {
     color: #e0e0f0;
-    font-weight: 700;
-    min-width: 40px;
-    text-align: center;
 }
-.controls input[type="range"] {
+.legend .controls input[type="range"] {
     height: 5px;
     accent-color: #6a8cff;
-    min-width: 60px;
 }
-.controls button {
+.legend .controls button {
     background: #3a4a8a;
     color: #e0e0f0;
-    padding: 4px 10px;
-    font-size: 15px;
-    line-height: 1;
 }
-.controls button:hover {
+.legend .controls button:hover {
     background: #5a6aaa;
 }
 
