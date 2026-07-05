@@ -13,7 +13,7 @@ export function setLang(lang) {
 
 const TRANSLATIONS = {
   jp: {
-    mainTitle: "消滅図",
+    mainTitle: "日本空洞化",
     mode5yr: "直近5年",
     modeSince1980: "1980年以降",
     langToggle: "English",
@@ -28,7 +28,7 @@ const TRANSLATIONS = {
     hintZoom: "<b>ズーム</b> ピンチ / スクロール",
   },
   en: {
-    mainTitle: "Vanishing Japan",
+    mainTitle: "Hollow Japan",
     mode5yr: "Last 5 years",
     modeSince1980: "Since 1980",
     langToggle: "日本語",
@@ -155,7 +155,7 @@ export function parseCSVLine(line) {
 
 // ─── Load CSV data ──────────────────────────────────────────────
 export async function loadCSV() {
-  const resp = await fetch("built_pop_wide_en_jp_extended.csv");
+  const resp = await fetch("data/built_pop_wide_en_jp_extended.csv");
   const text = await resp.text();
   const lines = text.trim().split("\n");
   const headers = parseCSVLine(lines[0]);
