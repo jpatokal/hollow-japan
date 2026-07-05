@@ -31,6 +31,7 @@ body {
     cursor: pointer;
     height: 6px;
     min-width: 50px;
+    accent-color: #1976d2;
 }
 .legend .controls button {
     background: #777;

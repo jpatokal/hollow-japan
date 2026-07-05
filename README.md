@@ -4,8 +4,6 @@ An interactive visualization of Japanese municipal population change from 1980 t
 
 Data is available for every year (1-year intervals), with census years (1980–2020 every 5 years) and projected years (2025–2050 every 5 years) drawn from official sources, and intermediate years computed by linear interpolation.
 
-Coded using Zed and Deepseek, total tokens expended around 100,000,000 (US$0.97).
-
 ## Features
 
 - **Dual views**: 2D Leaflet map (`index.html`) and 3D Three.js isometric map (`3d.html`)
@@ -15,7 +13,6 @@ Coded using Zed and Deepseek, total tokens expended around 100,000,000 (US$0.97)
   - **Since 1980** — shows cumulative % change since 1980 (scale: −90% to +90%, with deep red fading to black for extreme decline)
 - **Language toggle**: switch between English and Japanese labels
 - **Hover info**: click or hover any municipality to see population, 5-year change, and change since 1980
-- **National population** displayed below the slider
 - **Responsive design**: works on mobile with compact controls
 
 ## Installation
@@ -32,6 +29,8 @@ python3 -m http.server 8080
 Then open:
 - **2D map**: http://localhost:8080/
 - **3D map**: http://localhost:8080/3d.html
+
+Pass in any municipality code to highlight a specific area, e.g. `http://localhost:8080/?code=1209` to highlight Yubari, Hokkaido.
 
 ## Data sources
 

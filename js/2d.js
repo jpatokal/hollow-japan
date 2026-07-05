@@ -16,7 +16,8 @@ import {
 let geoLayer = null;
 let allFeatures = []; // {geojson, muniCode}
 let geoLoaded = false;
-let currentCode = null; // hovered/previously selected
+let currentCode = null; // hovered municipality
+let selectedCode = null; // set by ?id=XXXX, persists across hovers
 
 async function loadAllGeoJSON(map) {
   const codes = [];
@@ -50,10 +51,12 @@ async function loadAllGeoJSON(map) {
       layer.on("mouseover", function () {
         showInfoPopup(popData[muniCode], 1980 + sliderIdx);
         currentCode = muniCode;
+        applyHighlight();
       });
       layer.on("mouseout", function () {
         document.getElementById("info").style.display = "none";
         currentCode = null;
+        applyHighlight();
       });
     },
   }).addTo(map);
@@ -96,6 +99,25 @@ function featureStyle(muniCode) {
   };
 }
 
+function applyHighlight() {
+  if (!geoLayer) return;
+  const highlightCode = currentCode || selectedCode;
+  geoLayer.eachLayer(function (layer) {
+    if (layer.highlighted) {
+      layer.setStyle({ weight: 0.5, color: "#666" });
+      layer.highlighted = false;
+    }
+  });
+  if (highlightCode) {
+    geoLayer.eachLayer(function (layer) {
+      if (layer.muniCode === highlightCode) {
+        layer.setStyle({ weight: 3, color: "#1976d2" });
+        layer.highlighted = true;
+      }
+    });
+  }
+}
+
 function updateMap() {
   if (!geoLayer) return;
   const yr = 1980 + sliderIdx;
@@ -108,7 +130,9 @@ function updateMap() {
       weight: 0.5,
       fillOpacity: 0.85,
     });
+    layer.highlighted = false;
   });
+  applyHighlight();
 }
 
 // ---------- Init map ----------
@@ -131,6 +155,23 @@ async function init() {
 
   await Promise.all([loadCSV(), loadAllGeoJSON(map)]);
 
+  // ─── ?id=XXXX — zoom to a specific municipality ────────────
+  const params = new URLSearchParams(window.location.search);
+  const targetId = parseInt(params.get("id"));
+  const hasPreselectedId = targetId && !isNaN(targetId) && popData[targetId];
+  if (hasPreselectedId) {
+    selectedCode = targetId;
+    sliderIdx = 70; // year 2050
+    document.getElementById("yearSlider").value = 70;
+    setChangeMode("since1980");
+    // Find the Leaflet layer and zoom in
+    geoLayer.eachLayer(function (layer) {
+      if (layer.muniCode === targetId) {
+        map.fitBounds(layer.getBounds(), { padding: [50, 50] });
+      }
+    });
+  }
+
   // ─── Refresh map colours and legend when mode changes ──────
   function refreshMap() {
     rebuildGradientBar();
@@ -141,16 +182,24 @@ async function init() {
       pctLabels.innerHTML = "<span>−10%</span><span>0%</span><span>+10%</span>";
     }
     updateMap();
-    if (currentCode) {
-      const entry = popData[currentCode];
+    const popupCode = currentCode || selectedCode;
+    if (popupCode) {
+      const entry = popData[popupCode];
       if (entry) showInfoPopup(entry, 1980 + sliderIdx);
     }
   }
 
   // Build initial gradient / labels
   rebuildGradientBar();
-  document.getElementById("pctLabels").innerHTML =
-    "<span>−10%</span><span>0%</span><span>+10%</span>";
+  if (hasPreselectedId) {
+    document.getElementById("pctLabels").innerHTML =
+      "<span>−90%</span><span>0%</span><span>+90%</span>";
+    updateMap();
+    showInfoPopup(popData[selectedCode], 2050);
+  } else {
+    document.getElementById("pctLabels").innerHTML =
+      "<span>−10%</span><span>0%</span><span>+10%</span>";
+  }
 
   // Mode toggle click handlers
   document.getElementById("mode5yr").addEventListener("click", function () {
@@ -230,8 +279,10 @@ async function init() {
     }
   });
 
-  // Start autoplay immediately
-  togglePlay();
+  // Start autoplay immediately (unless a preselected ID zooms to 2050)
+  if (!hasPreselectedId) {
+    togglePlay();
+  }
 }
 
 init();
