@@ -191,14 +191,13 @@ async function init() {
 
   // Build initial gradient / labels
   rebuildGradientBar();
+  document.getElementById("pctLabels").innerHTML =
+    getChangeMode() === "since1980"
+      ? "<span>−90%</span><span>0%</span><span>+90%</span>"
+      : "<span>−10%</span><span>0%</span><span>+10%</span>";
   if (hasPreselectedId) {
-    document.getElementById("pctLabels").innerHTML =
-      "<span>−90%</span><span>0%</span><span>+90%</span>";
     updateMap();
     showInfoPopup(popData[selectedCode], 2050);
-  } else {
-    document.getElementById("pctLabels").innerHTML =
-      "<span>−10%</span><span>0%</span><span>+10%</span>";
   }
 
   // Mode toggle click handlers

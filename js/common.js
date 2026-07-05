@@ -64,7 +64,7 @@ export function updateLabels() {
 }
 
 // ─── Change mode: "5year" or "since1980" ─────────────────────────
-let _changeMode = "5year";
+let _changeMode = "since1980";
 export function getChangeMode() {
   return _changeMode;
 }

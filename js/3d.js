@@ -23,7 +23,9 @@ const HEIGHT_SCALE = 0.135; // units per ∛population
 // ─── Build gradient legend ──────────────────────────────────────
 rebuildGradientBar();
 document.getElementById("pctLabels").innerHTML =
-  "<span>−10%</span><span>0%</span><span>+10%</span>";
+  getChangeMode() === "since1980"
+    ? "<span>−90%</span><span>0%</span><span>+90%</span>"
+    : "<span>−10%</span><span>0%</span><span>+10%</span>";
 
 // ─── Project lat/lng → x/z ──────────────────────────────────────
 function project(lng, lat) {
