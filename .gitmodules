@@ -1,0 +1,3 @@
+[submodule "simplify-japan-geojson"]
+	path = simplify-japan-geojson
+	url = https://github.com/ricewin/simplify-japan-geojson.git

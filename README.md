@@ -20,12 +20,12 @@ Coded using Zed and Deepseek, total tokens expended around 100,000,000 (US$0.97)
 
 ## Installation
 
-The code is pure Javascript and can be run locally with any HTTP server. GeoJSON shapes for municipalities are not included in this repository and must be sourced from [simplify-japan-geojson](https://github.com/ricewin/simplify-japan-geojson).
+The code is pure Javascript and can be run locally with any HTTP server.
+Clone with `--recurse-submodules` to download the necessary `simplify-japan-geojson` submodule.
 
 ```bash
-git clone https://github.com/jpatokal/hollow-japan.git
+git clone --recurse-submodules https://github.com/jpatokal/hollow-japan.git
 cd hollow-japan
-git clone https://github.com/ricewin/simplify-japan-geojson.git
 python3 -m http.server 8080
 ```
 
@@ -51,6 +51,10 @@ Population projections for future years (2025–2050) are sourced from the [Nati
 ### Interpolation
 
 All non-census and non-projected years (1981–1984, 1986–1989, etc.) are computed by simple linear interpolation between the nearest available data points.
+
+### Geometry
+
+GeoJSON shapes for Japanese municipalities are sourced as a submodule from [simplify-japan-geojson](https://github.com/ricewin/simplify-japan-geojson).
 
 ## License
 
