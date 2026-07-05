@@ -131,6 +131,43 @@ body {
     color: #555;
 }
 
+/* ─── Popup bar chart ──────────────────────────────────────────── */
+.pop-chart {
+    display: flex;
+    flex-direction: column;
+    margin: 6px 0 5px;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 2px;
+}
+.pop-chart .chart-bars {
+    height: 100px;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 2px;
+    background: #e8e8e8;
+    padding: 3px;
+    display: flex;
+    flex-direction: column;
+}
+.pop-chart .chart-bars-inner {
+    display: flex;
+    align-items: flex-end;
+    flex: 1;
+    width: 100%;
+}
+.pop-chart .chart-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2px;
+}
+.pop-chart .chart-label {
+    font-size: 9px;
+    color: #888;
+    line-height: 1;
+    white-space: nowrap;
+}
+
 /* ─── Mode toggle ───────────────────────────────────────────────── */
 .mode-toggle {
     display: flex;
@@ -172,7 +209,7 @@ body {
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
     font-size: 13px;
     display: none;
-    max-width: 280px;
+    width: min(360px, calc(100vw - 40px));
     line-height: 1.4;
 }
 #info .name {

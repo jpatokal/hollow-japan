@@ -326,8 +326,8 @@ function updateScene(yearIdx) {
         const pop80 = item.entry[1980];
         if (pop80 && pop80 > 0 && pop > 0) {
           const rate = (pop - pop80) / pop80;
-          const clamped = Math.max(-0.9, Math.min(0.1, rate));
-          const normalized = clamped >= 0 ? clamped / 0.1 : clamped / 0.9;
+          const clamped = Math.max(-0.9, Math.min(0.9, rate));
+          const normalized = clamped >= 0 ? clamped / 0.9 : clamped / 0.9;
           const cssColor = colorForRate(normalized, true);
           colorHex = new THREE.Color(cssColor).getHex();
         }

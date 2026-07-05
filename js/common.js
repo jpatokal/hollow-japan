@@ -101,7 +101,7 @@ export function colorForRate(rate, fadeToBlack = false) {
     return `rgb(${r},${g},${b})`;
   } else if (rate < 0) {
     if (fadeToBlack) {
-      const fadeStart = 1 / 9; // 0.111… — where −10% change maps to
+      const fadeStart = 2 / 9; // 0.222… — where −20% change maps to
       if (abs <= fadeStart) {
         // White → Red (same as 5‑year mode)
         const t = abs / fadeStart;
@@ -213,9 +213,44 @@ export function showInfoPopup(entry, yr, extraHtml = "") {
 
   const popLabel = `${t.popLabel.replace("%d", yr)}:`;
 
+  // ─── Build bar chart ──────────────────────────────────────
+  const pop80 = entry[1980];
+  const mode = getChangeMode();
+  let maxPop = 0;
+  for (const y of YEARS) {
+    const p = entry[y];
+    if (p && p > maxPop) maxPop = p;
+  }
+  let bars = "";
+  for (const y of YEARS) {
+    const p = entry[y];
+    if (p == null) continue;
+    const h = maxPop > 0 ? (p / maxPop) * 100 : 0;
+    let color = "#ffffff";
+    if (y > 1980 && pop80 && pop80 > 0 && p > 0) {
+      if (mode === "since1980") {
+        const rate = (p - pop80) / pop80;
+        const clamped = Math.max(-0.9, Math.min(0.9, rate));
+        const normalized = clamped >= 0 ? clamped / 0.9 : clamped / 0.9;
+        color = colorForRate(normalized, true);
+      } else {
+        const prevYr = y - 5 >= 1980 ? y - 5 : 1980;
+        const prevPop = entry[prevYr];
+        if (prevPop && prevPop > 0) {
+          const rate = (p - prevPop) / prevPop;
+          const clamped = Math.max(-0.1, Math.min(0.1, rate));
+          color = colorForRate(clamped / 0.1);
+        }
+      }
+    }
+    if (y === yr) color = "#1976d2";
+    bars += `<span style="flex:1;min-width:1px;height:${h}px;background:${color}"></span>`;
+  }
+
   el.innerHTML = `
         <div class="name">${nameLabel}</div>
         ${nameSub ? `<div class="jp">${nameSub}</div>` : ""}
+        <div class="pop-chart"><div class="chart-bars"><div class="chart-bars-inner">${bars}</div></div><div class="chart-labels"><span class="chart-label">1980</span><span class="chart-label">2050</span></div></div>
         <div>${popLabel} <b>${pop.toLocaleString()}</b> ${label}${change}${since1980}</div>
         ${extraHtml}
     `;

@@ -75,8 +75,8 @@ function calcColor(muniCode, yr) {
     const popCur = entry[yr];
     if (pop80 == null || pop80 === 0 || popCur == null) return "#eeeeee";
     const rate = (popCur - pop80) / pop80;
-    const clamped = Math.max(-0.9, Math.min(0.1, rate));
-    const normalized = clamped >= 0 ? clamped / 0.1 : clamped / 0.9;
+    const clamped = Math.max(-0.9, Math.min(0.9, rate));
+    const normalized = clamped >= 0 ? clamped / 0.9 : clamped / 0.9;
     return colorForRate(normalized, true);
   }
 
