@@ -58,8 +58,23 @@ async function loadAllGeoJSON(map) {
         currentCode = null;
         applyHighlight();
       });
+      layer.on("click", function (e) {
+        showInfoPopup(popData[muniCode], 1980 + sliderIdx);
+        currentCode = muniCode;
+        applyHighlight();
+        if (window.innerWidth >= 768) {
+          map.fitBounds(layer.getBounds(), { padding: [50, 50] });
+        }
+        L.DomEvent.stopPropagation(e);
+      });
     },
   }).addTo(map);
+  // Dismiss popup on any map click (clicks pass through the popup via pointer-events:none)
+  map.on("click", function () {
+    document.getElementById("info").style.display = "none";
+    currentCode = null;
+    applyHighlight();
+  });
   geoLoaded = true;
 }
 
