@@ -1,6 +1,8 @@
 # Hollow Japan 日本空洞化
 
-An interactive visualization of Japanese municipal population change from 1980 to 2050, with both a 2D Leaflet map and a 3D Three.js isometric map.
+An interactive 2D and 3D visualization of Japanese municipal population change from 1980 to 2050.
+
+![Animation of 2D mode](img/2d.gif)
 
 Data is available for every year (1-year intervals), with census years (1980–2020 every 5 years) and projected years (2025–2050 every 5 years) drawn from official sources, and intermediate years computed by linear interpolation.
 
@@ -8,7 +10,6 @@ Live demo: [https://jpatokal.github.io/hollow-japan/](https://jpatokal.github.io
 
 ## Features
 
-![Animation of 2D mode](img/2d.gif)
 ![Animation of 3D mode](img/3d.gif)
 
 - **Dual views**: 2D Leaflet map (`index.html`) and 3D Three.js isometric map (`3d.html`)
