@@ -176,7 +176,7 @@ function createCompass() {
 }
 
 const compass = createCompass();
-compass.position.set(24, 0, 13);
+compass.position.set(24, 0, 23);
 scene.add(compass);
 
 // ─── Municipality meshes ─────────────────────────────────────────
@@ -534,12 +534,65 @@ async function init() {
     this.classList.toggle("expanded");
   });
 
+  // ─── Keyboard controls ──────────────────────────────────────
+  const keys = {};
+  document.addEventListener("keydown", function (e) {
+    const k = e.key.toLowerCase();
+    keys[k] = true;
+    if (
+      [
+        "w",
+        "a",
+        "s",
+        "d",
+        "e",
+        "q",
+        " ",
+        "arrowup",
+        "arrowdown",
+        "arrowleft",
+        "arrowright",
+      ].includes(k)
+    ) {
+      e.preventDefault();
+    }
+  });
+  document.addEventListener("keyup", function (e) {
+    keys[e.key.toLowerCase()] = false;
+  });
+
   // ─── Animation loop ──────────────────────────────────────────
   function animate() {
     requestAnimationFrame(animate);
+
+    // Keyboard movement
+    let dist = controls.target.distanceTo(camera.position);
+    const speed = dist * 0.02;
+    const forward = new THREE.Vector3()
+      .copy(controls.target)
+      .sub(camera.position);
+    forward.y = 0;
+    forward.normalize();
+    const right = new THREE.Vector3().crossVectors(
+      forward,
+      new THREE.Vector3(0, 1, 0),
+    );
+    const move = new THREE.Vector3();
+    if (keys["w"] || keys["arrowup"]) move.add(forward);
+    if (keys["s"] || keys["arrowdown"]) move.sub(forward);
+    if (keys["a"] || keys["arrowleft"]) move.sub(right);
+    if (keys["d"] || keys["arrowright"]) move.add(right);
+    if (keys["e"] || keys[" "]) move.y += 1;
+    if (keys["q"] || keys["control"]) move.y -= 1;
+    if (move.length() > 0) {
+      move.normalize().multiplyScalar(speed);
+      camera.position.add(move);
+      controls.target.add(move);
+    }
+
     controls.update();
     const cam = camera.position;
-    const dist = controls.target.distanceTo(cam);
+    dist = controls.target.distanceTo(cam);
     const coordsEl = document.querySelector("#camInfo .cam-coords");
     if (coordsEl) {
       coordsEl.textContent =
