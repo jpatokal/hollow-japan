@@ -10,6 +10,7 @@ import {
   setChangeMode,
   rebuildGradientBar,
   showInfoPopup,
+  hidePopup,
   getLang,
   setLang,
 } from "./common.js";
@@ -391,7 +392,7 @@ function onPointerMove(event) {
     }
   }
   hoveredCode = null;
-  document.getElementById("info").style.display = "none";
+  hidePopup();
   renderer.domElement.style.cursor = "default";
 }
 

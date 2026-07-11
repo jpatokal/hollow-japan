@@ -131,6 +131,20 @@ body {
     color: #555;
 }
 
+/* ─── Mobile: compact legend when popup is visible ─────────────── */
+@media (max-width: 767px) {
+    .legend.legend-compact .map-title-row,
+    .legend.legend-compact .grad,
+    .legend.legend-compact .pct-labels,
+    .legend.legend-compact .mode-toggle {
+        display: none;
+    }
+    .legend.legend-compact {
+        width: min(360px, calc(100vw - 40px));
+        padding: 4px 10px 10px;
+    }
+}
+
 /* ─── Popup bar chart ──────────────────────────────────────────── */
 .pop-chart {
     display: flex;

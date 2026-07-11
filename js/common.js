@@ -255,6 +255,17 @@ export function showInfoPopup(entry, yr, extraHtml = "") {
         ${extraHtml}
     `;
   el.style.display = "block";
+  if (window.innerWidth < 768) {
+    document.querySelector(".legend")?.classList.add("legend-compact");
+  }
+}
+
+export function hidePopup() {
+  const el = document.getElementById("info");
+  if (el) {
+    el.style.display = "none";
+    document.querySelector(".legend")?.classList.remove("legend-compact");
+  }
 }
 
 // ─── Rebuild gradient legend bar ─────────────────────────────────
